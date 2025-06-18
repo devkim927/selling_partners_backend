@@ -11,18 +11,22 @@ import lombok.Getter;
 @Getter
 public enum Role {
     ADMIN(Set.of(
-            Permission.READ,  //Permission enum class
+            Permission.READ,
             Permission.CREATE,
             Permission.UPDATE,
             Permission.DELETE
     )),
-    MANAGER(Set.of(
+    PARTNER(Set.of(
     		Permission.READ,
     		Permission.CREATE,
-    		Permission.UPDATE
+    		Permission.UPDATE,
+    		Permission.DELETE
     )),
-    USER(Set.of(
-    		Permission.READ
+    COMPANY(Set.of(
+    		Permission.READ,
+    		Permission.CREATE,
+    		Permission.UPDATE,
+    		Permission.DELETE
     ));
 
     private final Set<Permission> permissions;  //Permission enum class

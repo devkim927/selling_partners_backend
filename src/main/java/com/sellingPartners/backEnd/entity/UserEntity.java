@@ -31,12 +31,13 @@ public class UserEntity {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	
-	public UserEntity(String username,String password, Role role,String phoneNumber,String email) {
+	public UserEntity(String username,String password, Role role,String phoneNumber,String email,String name) {
 		this.username = username;
 		this.password = password;
 		this.role = role;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
+		this.name = name;
 	}
 	
 }
