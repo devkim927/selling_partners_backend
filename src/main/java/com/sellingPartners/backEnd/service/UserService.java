@@ -16,9 +16,9 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	
-	public UserEntity createUser(String username,String password,Role role, String phoneNumber,String email) {
+	public UserEntity createUser(String username,String password,Role role, String phoneNumber,String email,String name) {
 		String encodePw = passwordEncoder.encode(password);
-		UserEntity user = new UserEntity(username, encodePw, role, phoneNumber, email);
+		UserEntity user = new UserEntity(username, encodePw, role, phoneNumber, email, name);
 		
 		return userRepository.save(user);
 	}
