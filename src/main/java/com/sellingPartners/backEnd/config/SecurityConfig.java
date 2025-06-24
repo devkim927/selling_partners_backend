@@ -15,12 +15,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.filter.CorsFilter;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+	
+
+  private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
   private final CorsFilter corsFilter;
   private final SessionAccessDeniedHandler sessionAccessDeniedHandler;
