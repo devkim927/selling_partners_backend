@@ -51,6 +51,4 @@ public class UserController {
 
 	        return ResponseEntity.ok("로그인 성공");
 	    }
-	
-
 }
