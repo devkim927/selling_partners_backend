@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.filter.CorsFilter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -50,26 +51,32 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.cors().and()
-            .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-            .and()
-            .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-            .exceptionHandling(exceptionHandling -> exceptionHandling
-                    .accessDeniedHandler(sessionAccessDeniedHandler)
-                    .authenticationEntryPoint(sessionAuthenticationEntryPoint)
-            )
-            .sessionManagement(sessionManagement -> sessionManagement
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .sessionFixation().changeSessionId()
-                    .maximumSessions(1)
-                    .maxSessionsPreventsLogin(false)
-            )
-            .authorizeRequests()
-            .requestMatchers("/api/v1/signup", "/api/v1/login").permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .formLogin().disable()
-            .httpBasic().disable();
+    
+    CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+    requestHandler.setCsrfRequestAttributeName("_csrf");
+    
+    http.cors(cors -> {})
+        .csrf(csrf -> csrf
+            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            .csrfTokenRequestHandler(requestHandler)
+        )
+        .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+        .exceptionHandling(exceptionHandling -> exceptionHandling
+            .accessDeniedHandler(sessionAccessDeniedHandler)
+            .authenticationEntryPoint(sessionAuthenticationEntryPoint)
+        )
+        .sessionManagement(sessionManagement -> sessionManagement
+            .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+            .sessionFixation().changeSessionId()
+            .maximumSessions(1)
+            .maxSessionsPreventsLogin(false)
+        )
+        .authorizeRequests()
+        .requestMatchers("/api/v1/signup", "/api/v1/login").permitAll()
+        .anyRequest().authenticated()
+        .and()
+        .formLogin().disable()
+        .httpBasic().disable();
 
     return http.build();
   }
