@@ -72,7 +72,7 @@ public class SecurityConfig {
             .maxSessionsPreventsLogin(false)
         )
         .authorizeRequests()
-        .requestMatchers("/api/v1/signup", "/api/v1/login").permitAll()
+        .requestMatchers("/api/v1/signup", "/api/v1/login","api/v1/test").permitAll()
         .anyRequest().authenticated()
         .and()
         .formLogin().disable()
