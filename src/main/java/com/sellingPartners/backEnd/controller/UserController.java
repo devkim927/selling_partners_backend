@@ -1,10 +1,10 @@
 package com.sellingPartners.backEnd.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +16,8 @@ import com.sellingPartners.backEnd.dto.SignUpRequest;
 import com.sellingPartners.backEnd.entity.UserEntity;
 import com.sellingPartners.backEnd.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -41,14 +43,14 @@ public class UserController {
 		return ResponseEntity.ok(newUser);
 	}
 	
-	    @PostMapping("/login")
-	    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
-	        UsernamePasswordAuthenticationToken authToken =
-	            new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
+        UsernamePasswordAuthenticationToken authToken =
+            new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
 
-	        Authentication authentication = authenticationManager.authenticate(authToken);
-	        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Authentication authentication = authenticationManager.authenticate(authToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-	        return ResponseEntity.ok("로그인 성공");
-	    }
+        return ResponseEntity.ok("로그인 성공");
+    }
 }

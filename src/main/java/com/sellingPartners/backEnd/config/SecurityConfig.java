@@ -49,6 +49,7 @@ public class SecurityConfig {
       return authenticationConfiguration.getAuthenticationManager();
   }
 
+  @SuppressWarnings("removal")
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     
@@ -75,6 +76,16 @@ public class SecurityConfig {
         .requestMatchers("/api/v1/signup", "/api/v1/login").permitAll()
         .anyRequest().authenticated()
         .and()
+        .logout(logout -> logout
+                .logoutUrl("/api/v1/logout")
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    response.setStatus(200);
+                    response.getWriter().write("로그아웃 성공");
+                })
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)  
+                .deleteCookies("JSESSIONID") 
+         )
         .formLogin().disable()
         .httpBasic().disable();
 
