@@ -312,3 +312,9 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,eclipse,windows,macos,intellij,visualstudiocode
+
+
+### staticfiles - comet ### 
+# image
+src/main/resources/static/uploads/brochures/
+src/main/resources/static/uploads/thumbnails/

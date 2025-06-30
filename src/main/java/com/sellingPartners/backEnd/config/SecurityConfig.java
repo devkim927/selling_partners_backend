@@ -18,7 +18,7 @@ import org.springframework.web.filter.CorsFilter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.http.HttpMethod; // comet - GET, POST, PUT, DELETE 별 인증여부 관리.
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -73,7 +73,29 @@ public class SecurityConfig {
             .maxSessionsPreventsLogin(false)
         )
         .authorizeRequests()
-        .requestMatchers("/api/v1/signup", "/api/v1/login","api/v1/test").permitAll()
+        .requestMatchers(
+        		"/api/v1/signup", "/api/v1/login","api/v1/test", 
+        		"/error","/error/**" 						// comet - /error 경로 추가
+        		).permitAll()
+        // 프로젝트 단일 조회 (GET) - 인증 없이 허용
+        .requestMatchers(HttpMethod.GET, 
+        		"/api/v1/projects",
+        		"/api/v1/projects/*"
+        		).permitAll()
+// 여기는 필요 시 주석 해제 후 사용.
+//        //(DELETE) - 인증 필요
+//        .requestMatchers(HttpMethod.DELETE, 
+//        		
+//        		).authenticated()
+//        //(PUT) - 인증 필요
+//        .requestMatchers(HttpMethod.PUT, 
+//        		
+//        		).authenticated()
+//        //(DELETE) - 인증 필요
+//        .requestMatchers(HttpMethod.POST, 
+//
+//        		).authenticated()
+        
         .anyRequest().authenticated()
         .and()
         .logout(logout -> logout
