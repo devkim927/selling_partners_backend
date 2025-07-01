@@ -1,16 +1,12 @@
 package com.sellingPartners.backEnd.service;
 
-import java.util.Optional;
-
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-
 import com.sellingPartners.backEnd.entity.UserEntity;
 import com.sellingPartners.backEnd.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
