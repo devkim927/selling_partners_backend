@@ -2,15 +2,12 @@ package com.sellingPartners.backEnd.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
-
+import com.sellingPartners.backEnd.dto.PartnerProfileRequest;
+import com.sellingPartners.backEnd.dto.PartnerProfileResponse;
+import com.sellingPartners.backEnd.dto.PartnerProfileUpdateRequest;
 import com.sellingPartners.backEnd.entity.PartnerProfileEntity;
-import com.sellingPartners.backEnd.entity.PartnerProfileRequest;
-import com.sellingPartners.backEnd.entity.PartnerProfileResponse;
-import com.sellingPartners.backEnd.entity.PartnerProfileUpdateRequest;
 import com.sellingPartners.backEnd.repository.PartnerProfileRepository;
 
 import jakarta.transaction.Transactional;

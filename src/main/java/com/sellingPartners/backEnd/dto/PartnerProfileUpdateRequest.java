@@ -1,6 +1,8 @@
-package com.sellingPartners.backEnd.entity;
+package com.sellingPartners.backEnd.dto;
 
 import org.springframework.web.multipart.MultipartFile;
+
+import com.sellingPartners.backEnd.entity.Category;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
