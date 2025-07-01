@@ -2,10 +2,12 @@ package com.sellingPartners.backEnd.service;
 
 import com.sellingPartners.backEnd.dto.ProjectCreateRequest;
 import com.sellingPartners.backEnd.entity.ProjectEntity;
+import com.sellingPartners.backEnd.entity.ProjectViewEntity;
 import com.sellingPartners.backEnd.entity.UserEntity;
 import com.sellingPartners.backEnd.entity.Category;
 import com.sellingPartners.backEnd.entity.Role;
 import com.sellingPartners.backEnd.repository.ProjectRepository;
+import com.sellingPartners.backEnd.repository.ProjectViewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +22,7 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final FileStorageService fileStorageService;
-    
+    private final ProjectViewRepository projectViewRepository;
     // 프로젝트 생성 (로그인 필요)
     @Transactional
     public ProjectEntity createProject(ProjectCreateRequest request, UserEntity user) throws Exception {
@@ -112,8 +114,30 @@ public class ProjectService {
     }
 
     // 프로젝트 단일 조회 (누구나 가능)
-    public Optional<ProjectEntity> getProjectById(Long id) {
-        return projectRepository.findById(id);
+    public Optional<ProjectEntity> getProjectById(Long id, UserEntity user) {
+        Optional<ProjectEntity> projectOpt = projectRepository.findById(id);
+
+        if (user != null && projectOpt.isPresent()) {
+            Long userId = user.getId();
+
+            // 이미 조회했는지 확인
+            boolean alreadyViewed = projectViewRepository.existsByUserIdAndProjectId(userId, id);
+
+            if (!alreadyViewed) {
+                // 조회수 +1
+                ProjectEntity project = projectOpt.get();
+                project.setViews(project.getViews() + 1);
+                projectRepository.save(project);
+
+                // 조회 기록 저장
+                ProjectViewEntity view = new ProjectViewEntity();
+                view.setUserId(userId);
+                view.setProjectId(id);
+                projectViewRepository.save(view);
+            }
+        }
+
+        return projectOpt;
     }
 
     // 프로젝트 전체 조회 (누구나 가능)
@@ -138,5 +162,10 @@ public class ProjectService {
         
         // 엔티티 삭제
         projectRepository.deleteById(id);
+    }
+    
+    public Page<ProjectEntity> getMyProjects(Pageable pageable, UserEntity user) {
+        // user가 만든 프로젝트만 반환
+        return projectRepository.findAllByUser(user, pageable);
     }
 }

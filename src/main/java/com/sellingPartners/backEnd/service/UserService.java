@@ -38,4 +38,18 @@ public class UserService {
 	    return userRepository.findByUsername(username)
 	            .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username));
 	}
+	
+	// 로그인/비로그인만 판별 없으면 null 반환. - comet
+	public UserEntity isAuthenticated() {
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+	    if (authentication == null || !authentication.isAuthenticated()) {
+	    	return null;
+	    }
+
+	    String username = authentication.getName(); 
+
+	    return userRepository.findByUsername(username).orElse(null);
+	    
+	}			
 }
