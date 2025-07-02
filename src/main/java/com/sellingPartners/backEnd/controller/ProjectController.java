@@ -7,7 +7,6 @@ import com.sellingPartners.backEnd.dto.ProjectResponseDto;
 import com.sellingPartners.backEnd.entity.ProjectEntity;
 import com.sellingPartners.backEnd.entity.UserEntity;
 import com.sellingPartners.backEnd.entity.Category;
-import com.sellingPartners.backEnd.service.FileStorageService;
 import com.sellingPartners.backEnd.service.ProjectService;
 import com.sellingPartners.backEnd.service.UserService;
 import com.sellingPartners.backEnd.entity.Role;
@@ -15,11 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
 import java.util.Optional;
+import org.springframework.data.domain.Sort;
 // 페이지네이션 임포트
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -82,17 +81,22 @@ public class ProjectController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
+    // 프로젝트 단일 조회
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponseDto> getProjectById(@PathVariable("id") Long id) {
-        Optional<ProjectEntity> projectOpt = projectService.getProjectById(id);
+    	Optional<ProjectEntity> projectOpt;
+
+    	UserEntity user = userService.isAuthenticated();
+    	projectOpt = projectService.getProjectById(id, user);
+
         return projectOpt
             .map(project -> ResponseEntity.ok(new ProjectResponseDto(project)))
             .orElseGet(() -> ResponseEntity.notFound().build());
     }
+    // 프로젝트 전체 조회
     @GetMapping
     public Page<ProjectResponseDto> getAllProjects(
-        @PageableDefault(size = 18) Pageable pageable
+        @PageableDefault(size = 18, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<ProjectEntity> entityPage = projectService.getAllProjects(pageable);
         // 엔티티 -> DTO 변환
@@ -113,5 +117,17 @@ public class ProjectController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+    
+    // 자신이 작성한 프로젝트 전체 조회
+    @GetMapping("/my")
+    public Page<ProjectResponseDto> getMyProjects(
+        @PageableDefault(size = 18, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+    	UserEntity user = userService.getCurrentUser();
+    	Page<ProjectEntity> entityPage = projectService.getMyProjects(pageable, user);
+        // 엔티티 -> DTO 변환
+        return entityPage.map(ProjectResponseDto::new);
+        	
     }
 }
