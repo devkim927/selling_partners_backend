@@ -142,7 +142,7 @@ public class ProjectService {
 
     // 프로젝트 전체 조회 (누구나 가능)
     public Page<ProjectEntity> getAllProjects(Pageable pageable) {
-        return projectRepository.findAll(pageable);
+        return projectRepository.findAllWithUser(pageable);
     }
 
     // 프로젝트 삭제 (로그인 필요 + 본인 소유만 가능)
@@ -163,9 +163,9 @@ public class ProjectService {
         // 엔티티 삭제
         projectRepository.deleteById(id);
     }
-    
+    // 본인 작성 프로젝트 조회
     public Page<ProjectEntity> getMyProjects(Pageable pageable, UserEntity user) {
         // user가 만든 프로젝트만 반환
-        return projectRepository.findAllByUser(user, pageable);
+        return projectRepository.findAllByUserWithFetch(user, pageable);
     }
 }
